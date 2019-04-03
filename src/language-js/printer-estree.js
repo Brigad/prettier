@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("assert");
+
 // TODO(azz): anything that imports from main shouldn't be in a `language-*` dir.
 const comments = require("../main/comments");
 const {
@@ -44,6 +45,8 @@ const {
   hasFlowAnnotationComment,
   hasFlowShorthandAnnotationComment
 } = require("./utils");
+
+const needsQuoteProps = new WeakMap();
 
 const {
   builders: {
@@ -1162,7 +1165,6 @@ function printPathNoParens(path, options, print, args) {
         (!isNew &&
           n.callee.type === "Identifier" &&
           (n.callee.name === "require" || n.callee.name === "define")) ||
-        n.callee.type === "Import" ||
         // Template literals as single arguments
         (n.arguments.length === 1 &&
           isTemplateOnItsOwnLine(
@@ -3680,31 +3682,41 @@ function printStatementSequence(path, options, print) {
 
 function printPropertyKey(path, options, print) {
   const node = path.getNode();
+  const parent = path.getParentNode();
   const key = node.key;
+
+  if (options.quoteProps === "consistent" && !needsQuoteProps.has(parent)) {
+    const objectHasStringProp = (
+      parent.properties ||
+      parent.body ||
+      parent.members
+    ).some(
+      prop =>
+        prop.key &&
+        prop.key.type !== "Identifier" &&
+        !isStringPropSafeToCoerceToIdentifier(prop, options)
+    );
+    needsQuoteProps.set(parent, objectHasStringProp);
+  }
 
   if (
     key.type === "Identifier" &&
     !node.computed &&
-    options.parser === "json"
+    (options.parser === "json" ||
+      (options.quoteProps === "consistent" && needsQuoteProps.get(parent)))
   ) {
     // a -> "a"
+    const prop = printString(JSON.stringify(key.name), options);
     return path.call(
-      keyPath =>
-        comments.printComments(
-          keyPath,
-          () => JSON.stringify(key.name),
-          options
-        ),
+      keyPath => comments.printComments(keyPath, () => prop, options),
       "key"
     );
   }
 
   if (
-    isStringLiteral(key) &&
-    isIdentifierName(key.value) &&
-    !node.computed &&
-    options.parser !== "json" &&
-    !(options.parser === "typescript" && node.type === "ClassProperty")
+    isStringPropSafeToCoerceToIdentifier(node, options) &&
+    (options.quoteProps === "as-needed" ||
+      (options.quoteProps === "consistent" && !needsQuoteProps.get(parent)))
   ) {
     // 'a' -> a
     return path.call(
@@ -3941,7 +3953,12 @@ function printArgumentsList(path, options, print) {
     return concat(parts);
   }, "arguments");
 
-  const maybeTrailingComma = shouldPrintComma(options, "all") ? "," : "";
+  const maybeTrailingComma =
+    // Dynamic imports cannot have trailing commas
+    !(node.callee && node.callee.type === "Import") &&
+    shouldPrintComma(options, "all")
+      ? ","
+      : "";
 
   function allArgsBrokenOut() {
     return group(
@@ -4039,7 +4056,7 @@ function printArgumentsList(path, options, print) {
     concat([
       "(",
       indent(concat([softline, concat(printedArguments)])),
-      ifBreak(shouldPrintComma(options, "all") ? "," : ""),
+      ifBreak(maybeTrailingComma),
       softline,
       ")"
     ]),
@@ -4928,23 +4945,16 @@ function printMemberChain(path, options, print) {
     groups.length >= 2 && !groups[1][0].node.comments && shouldNotWrap(groups);
 
   function printGroup(printedGroup) {
-    const result = [];
-    for (let i = 0; i < printedGroup.length; i++) {
-      // Checks if the next node (i.e. the parent node) needs parens
-      // and print accordingly
-      if (printedGroup[i + 1] && printedGroup[i + 1].needsParens) {
-        result.push(
-          "(",
-          printedGroup[i].printed,
-          printedGroup[i + 1].printed,
-          ")"
-        );
-        i++;
-      } else {
-        result.push(printedGroup[i].printed);
-      }
+    const printed = printedGroup.map(tuple => tuple.printed);
+    // Checks if the last node (i.e. the parent node) needs parens and print
+    // accordingly
+    if (
+      printedGroup.length > 0 &&
+      printedGroup[printedGroup.length - 1].needsParens
+    ) {
+      return concat(["(", ...printed, ")"]);
     }
-    return concat(result);
+    return concat(printed);
   }
 
   function printIndentedGroup(groups) {
@@ -6261,6 +6271,16 @@ function isLiteral(node) {
   );
 }
 
+function isStringPropSafeToCoerceToIdentifier(node, options) {
+  return (
+    isStringLiteral(node.key) &&
+    isIdentifierName(node.key.value) &&
+    !node.computed &&
+    options.parser !== "json" &&
+    !(options.parser === "typescript" && node.type === "ClassProperty")
+  );
+}
+
 function isNumericLiteral(node) {
   return (
     node.type === "NumericLiteral" ||
@@ -6418,8 +6438,7 @@ function canAttachComment(node) {
     node.type !== "Block" &&
     node.type !== "EmptyStatement" &&
     node.type !== "TemplateElement" &&
-    node.type !== "Import" &&
-    !(node.callee && node.callee.type === "Import")
+    node.type !== "Import"
   );
 }
 
