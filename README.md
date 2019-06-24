@@ -1,6 +1,6 @@
 # :fork_and_knife: This is a fork.
 
-Compared to `prettier`, `@btmills/prettier` moves binary operators to the beginning of new lines in long expressions instead of the end of the previous line. That's it.
+Compared to `prettier`, `@brigad/prettier` moves binary operators to the beginning of new lines in long expressions instead of the end of the previous line. That's it.
 
 ```js
 // Before:
@@ -11,9 +11,9 @@ const before =
 
 // After:
 const after =
-  bom.length >= 2
-  && ((bom.charCodeAt(0) === 0xff && bom.charCodeAt(1) === 0xfe)
-    || (bom.charCodeAt(0) === 0xfe && bom.charCodeAt(1) === 0xff));
+  bom.length >= 2 &&
+  ((bom.charCodeAt(0) === 0xff && bom.charCodeAt(1) === 0xfe) ||
+    (bom.charCodeAt(0) === 0xfe && bom.charCodeAt(1) === 0xff));
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ const after =
 If you use Yarn, you can [install using an alias](https://yarnpkg.com/lang/en/docs/cli/add/#toc-yarn-add-alias) so that `require('prettier')` transparently resolves to this fork:
 
 ```sh
-$ yarn add -D prettier@npm:@btmills/prettier
+$ yarn add -D prettier@npm:@brigad/prettier
 ```
 
 ## Releases
@@ -131,7 +131,7 @@ foo(
   reallyLongArg(),
   omgSoManyParameters(),
   IShouldRefactorThis(),
-  isThereSeriouslyAnotherOne()
+  isThereSeriouslyAnotherOne(),
 );
 ```
 
