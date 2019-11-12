@@ -142,57 +142,57 @@ printWidth: 80
 
 =====================================output=====================================
 (
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-  bbbbbbbbbbbbbbbbbbbbbbbbb &&
-  ccccccccccccccccccccccccc &&
-  ddddddddddddddddddddddddd &&
-  eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+  && bbbbbbbbbbbbbbbbbbbbbbbbb
+  && ccccccccccccccccccccccccc
+  && ddddddddddddddddddddddddd
+  && eeeeeeeeeeeeeeeeeeeeeeeee
 )();
 
 (aa && bb && cc && dd && ee)();
 
 (
-  aaaaaaaaaaaaaaaaaaaaaaaaa +
-  bbbbbbbbbbbbbbbbbbbbbbbbb +
-  ccccccccccccccccccccccccc +
-  ddddddddddddddddddddddddd +
-  eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+  + bbbbbbbbbbbbbbbbbbbbbbbbb
+  + ccccccccccccccccccccccccc
+  + ddddddddddddddddddddddddd
+  + eeeeeeeeeeeeeeeeeeeeeeeee
 )();
 
 (aa + bb + cc + dd + ee)();
 
 (
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-  bbbbbbbbbbbbbbbbbbbbbbbbb &&
-  ccccccccccccccccccccccccc &&
-  ddddddddddddddddddddddddd &&
-  eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+  && bbbbbbbbbbbbbbbbbbbbbbbbb
+  && ccccccccccccccccccccccccc
+  && ddddddddddddddddddddddddd
+  && eeeeeeeeeeeeeeeeeeeeeeeee
 )()()();
 
 (
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-  bbbbbbbbbbbbbbbbbbbbbbbbb &&
-  ccccccccccccccccccccccccc &&
-  ddddddddddddddddddddddddd &&
-  eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+  && bbbbbbbbbbbbbbbbbbbbbbbbb
+  && ccccccccccccccccccccccccc
+  && ddddddddddddddddddddddddd
+  && eeeeeeeeeeeeeeeeeeeeeeeee
 )(
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-    bbbbbbbbbbbbbbbbbbbbbbbbb &&
-    ccccccccccccccccccccccccc &&
-    ddddddddddddddddddddddddd &&
-    eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+    && bbbbbbbbbbbbbbbbbbbbbbbbb
+    && ccccccccccccccccccccccccc
+    && ddddddddddddddddddddddddd
+    && eeeeeeeeeeeeeeeeeeeeeeeee
 )(
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-    bbbbbbbbbbbbbbbbbbbbbbbbb &&
-    ccccccccccccccccccccccccc &&
-    ddddddddddddddddddddddddd &&
-    eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+    && bbbbbbbbbbbbbbbbbbbbbbbbb
+    && ccccccccccccccccccccccccc
+    && ddddddddddddddddddddddddd
+    && eeeeeeeeeeeeeeeeeeeeeeeee
 )(
-  aaaaaaaaaaaaaaaaaaaaaaaaa &&
-    bbbbbbbbbbbbbbbbbbbbbbbbb &&
-    ccccccccccccccccccccccccc &&
-    ddddddddddddddddddddddddd &&
-    eeeeeeeeeeeeeeeeeeeeeeeee
+  aaaaaaaaaaaaaaaaaaaaaaaaa
+    && bbbbbbbbbbbbbbbbbbbbbbbbb
+    && ccccccccccccccccccccccccc
+    && ddddddddddddddddddddddddd
+    && eeeeeeeeeeeeeeeeeeeeeeeee
 );
 
 ================================================================================
@@ -212,17 +212,10 @@ a = (
 
 =====================================output=====================================
 a =
-<<<<<<< HEAD
   // Comment 1
-  Math.random() * (yRange * (1 - minVerticalFraction)) +
-  minVerticalFraction * yRange -
-  offset;
-=======
-  // Commment 1
   Math.random() * (yRange * (1 - minVerticalFraction))
   + minVerticalFraction * yRange
   - offset;
->>>>>>> Update tests for pre-operator line breaks
 
 ================================================================================
 `;
